@@ -15,7 +15,6 @@ export const EventSearchableFields = [
     'eventName',
     'description',
     "eventType",
-    // "ticketPrice",
 ]; 
 
 

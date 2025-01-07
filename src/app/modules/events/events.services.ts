@@ -6,10 +6,13 @@ import { Event } from "./events.model"
 import { User } from "../user/user.model";
 import { USER_STATUS } from "../user/user.constants";
 import { QueryBuilder } from "../../builder/QueryBuilder";
-import { EVENTS_STATUS, EventSearchableFields } from "./events.constants";
+import { EVENTS_STATUS, EVENTS_TYPE, EventSearchableFields } from "./events.constants";
 import mongoose from "mongoose";
 import { AttendanceModel } from "./attendanceSchema";
 import { Payment } from "../payment/payment.model";
+import { Follow } from "../follow/follow.model";
+import { UserEvent } from "../userevents/userevents.model";
+import { USER_EVENT_TYPE } from "../userevents/userevents.constant";
 
 const createEventsIntoDB = async (createdBy: string, payload: IEvent) => {
     const { categoryId } = payload;
@@ -29,7 +32,7 @@ const createEventsIntoDB = async (createdBy: string, payload: IEvent) => {
     return result;
 }
 
-const getSingleEventByEventId = async (id: string) => {
+const getSingleEventByEventId = async (id: string, loginUserId: string) => {
     if (!mongoose.isValidObjectId(id)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid event ID.")
     }
@@ -38,7 +41,30 @@ const getSingleEventByEventId = async (id: string) => {
         .select("createdBy eventName image description eventType ticketPrice startTime")
         .populate("createdBy", "name photo");
 
-    return event;
+    // check user is following this creator
+    const following = await Follow.findOne({
+        userId: loginUserId,
+        followingId: (event!.createdBy as any)._id
+    })
+
+    const eventData = event?.toObject();
+
+    const isFollowing = following ? true : false;
+    (eventData as any).isFollowing = isFollowing;
+
+    // check this event is saved
+    const saveEvent = await UserEvent.findOne(
+        {
+            userId: loginUserId,
+            eventId: event?._id,
+            type: USER_EVENT_TYPE.SAVED
+        }
+    )
+    
+    const isSaveEvent = saveEvent ? true : false;
+    (eventData as any).isSaveEvent = isSaveEvent;
+
+    return eventData;
 }
 
 
@@ -152,7 +178,7 @@ const getAllEvents = async (query: Record<string, unknown>) => {
 // find all the events which categories is select user
 const getMyFavouriteEvents = async (query: Record<string, unknown>, userId: string) => {
     const me = await User.findById(userId).select("selectedCategory");
-    
+
     const events = new QueryBuilder(Event.find({ categoryId: { $in: me?.selectedCategory } }), query)
         .paginate()
         .sort()

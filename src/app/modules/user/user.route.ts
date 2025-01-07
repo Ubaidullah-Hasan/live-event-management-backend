@@ -14,7 +14,7 @@ router.post("/",
 );
 
 router.post("/verify-register-email",
-  auth(USER_ROLE.USER, USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN),
+  // auth(USER_ROLE.USER, USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN),
   validateRequest(UserValidation.verifyRegisterEmailZodSchema),
   UserController.verifyRegisterEmail
 )

@@ -19,8 +19,7 @@ const createUser = catchAsync(
 );
 
 const verifyRegisterEmail = catchAsync(async (req: Request, res: Response) => {
-  const { otp } = req.body;
-  const {email} = req.user;
+  const { otp, email } = req.body;
   const result = await UserService.verifyRegisterEmail(email, otp);
 
   sendResponse(res, {

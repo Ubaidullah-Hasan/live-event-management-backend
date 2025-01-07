@@ -146,6 +146,18 @@ const getUserProfileFromDB = async (
     return user;
   }
 
+  let followingCount = 0;
+  if (role === USER_ROLE.USER) {
+    followingCount = await Follow.countDocuments({
+      userId: id
+    })
+
+    let user = isExistUser.toObject();
+    user.followingCount = followingCount;
+
+    return user;
+  }
+
   return isExistUser;
 };
 

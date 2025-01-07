@@ -24,6 +24,7 @@ const createUserZodSchema = z.object({
 
 const verifyRegisterEmailZodSchema = z.object({
   body: z.object({
+    email: z.string({ required_error: 'Email is required' }),
     otp: z.string().min(6, "OTP min 6 digit").max(6, "OTP max digit 6"),
   })
 })

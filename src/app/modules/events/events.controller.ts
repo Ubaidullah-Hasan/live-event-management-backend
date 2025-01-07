@@ -18,8 +18,9 @@ const createEvents = catchAsync(async (req: Request, res: Response) => {
 
 const getSingleEventByEventId = catchAsync(async (req: Request, res: Response) => {
     const { eventId } = req.params;
+    const {id} = req.user;
 
-    const result = await eventServices.getSingleEventByEventId(eventId);
+    const result = await eventServices.getSingleEventByEventId(eventId, id);
 
     sendResponse(res, {
         success: true,

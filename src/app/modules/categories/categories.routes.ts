@@ -10,7 +10,7 @@ import formDataProcessing from "../../middlewares/formDataProcessing";
 const router = Router();
 
 router.post("/create",
-    auth(USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN),
+    auth(USER_ROLE.SUPER_ADMIN),
     fileUploadHandler(),
     formDataProcessing(),
     validateRequest(categoriesValidationSchema.categoryCreateValidationSchema),
@@ -27,14 +27,14 @@ router.get("/:categoryId",
 )
 
 router.patch("/:categoryId",
-    auth(USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN),
+    auth(USER_ROLE.SUPER_ADMIN),
     fileUploadHandler(),
     formDataProcessing(),
     categoriController.updateSingleCategory
 )
 
 router.delete("/:categoryId",
-    auth(USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN),
+    auth(USER_ROLE.SUPER_ADMIN),
     categoriController.deleteCategory
 )
 

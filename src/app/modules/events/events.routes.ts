@@ -11,7 +11,7 @@ import cron from "node-cron";
 const router = Router();
 
 router.post("/create-events",
-    auth(USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN),
+    auth(USER_ROLE.CREATOR),
     fileUploadHandler(),
     formDataProcessing(),
     validateRequest(eventValidationSchema.eventCreateValidationSchema),
@@ -19,6 +19,7 @@ router.post("/create-events",
 );
 
 router.get("/single-event/:eventId",
+    auth(USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN, USER_ROLE.USER),
     eventController.getSingleEventByEventId
 );
 

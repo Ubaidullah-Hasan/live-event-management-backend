@@ -42,7 +42,7 @@ const resetPassword = (values: IResetPassword) => { // todo: change <img
 const registerAccountOtpSend = (values: IResetPassword) => { // todo: change <img
   const data = {
     to: values.email,
-    subject: 'Reset your password',
+    subject: 'Verify your email.',
     html: `
     <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
       <table width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 8px; padding: 20px;">

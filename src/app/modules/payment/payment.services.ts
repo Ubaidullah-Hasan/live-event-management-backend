@@ -49,7 +49,7 @@ const createPaymentIntent = async (payload: IPaymentIntent) => {
 
 
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount * 100, // সেন্টে রূপান্তর
+        amount: amount * 100, 
         currency: "usd",
         payment_method_types: ['card'],
         metadata: { userId, eventId },

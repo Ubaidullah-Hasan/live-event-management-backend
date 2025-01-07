@@ -59,7 +59,7 @@ const loginUserFromDB = async (payload: TLoginUser) => {
     config.jwt.jwt_refresh_expire_in as string
   );
 
-  return { accessToken, refreshToken };
+  return { accessToken, refreshToken, role: isExistUser.role };
 };
 
 //forget password
@@ -186,7 +186,7 @@ const resetPasswordToDB = async (
   const user = await User.findOne({ "otpVerification.token": token }).select("+otpVerification");
 
   if (!user) {
-    throw new ApiError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
+    throw new ApiError(StatusCodes.UNAUTHORIZED, 'You are given wrong token.');
   }
 
   if (!user?.otpVerification?.isResetPassword) {

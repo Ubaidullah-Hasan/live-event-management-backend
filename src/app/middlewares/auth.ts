@@ -12,10 +12,14 @@ const auth =
     try {
       const tokenWithBearer = req.headers.authorization;
 
-      if (!tokenWithBearer) {
+      if (!tokenWithBearer?.includes("Bearer")) {
         throw new ApiError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
       }
 
+      if (!tokenWithBearer) {
+        throw new ApiError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
+      }
+      
       if (tokenWithBearer && tokenWithBearer.startsWith('Bearer')) {
         const token = tokenWithBearer.split(' ')[1];
         
@@ -24,7 +28,7 @@ const auth =
           token,
           config.jwt.jwt_secret as Secret
         );
-        
+
         //set user to header
         req.user = verifyUser;
 
