@@ -60,7 +60,7 @@ const getSingleEventByEventId = async (id: string, loginUserId: string) => {
             type: USER_EVENT_TYPE.SAVED
         }
     )
-    
+
     const isSaveEvent = saveEvent ? true : false;
     (eventData as any).isSaveEvent = isSaveEvent;
 
@@ -175,6 +175,29 @@ const getAllEvents = async (query: Record<string, unknown>) => {
 }
 
 
+const getFollowingUserEvents = async (query: Record<string, unknown>, loginUserId: string) => {
+    const followingUsers = await Follow.find({ userId: loginUserId }).select("followingId");
+
+    const followingIds = followingUsers.map(follow => follow.followingId);
+
+
+    const events = new QueryBuilder(Event.find(
+        { createdBy: { $in: followingIds } }
+    ), query)
+        .fields()
+        .paginate()
+        .sort()
+        .filter()
+        .search(EventSearchableFields)
+
+    const result = await events.modelQuery
+        .populate('categoryId', 'categoryName image')
+        .populate("createdBy", "name photo")
+
+    return result;
+}
+
+
 // find all the events which categories is select user
 const getMyFavouriteEvents = async (query: Record<string, unknown>, userId: string) => {
     const me = await User.findById(userId).select("selectedCategory");
@@ -240,11 +263,23 @@ const updateAllEventsTrendingStatus = async () => {
 
     const bulkOperations = events.map((event) => {
         let isTrending = false;
+        let status = EVENTS_STATUS.UPCOMING;
+
+        // change status upcomming to live 
+        const isStatTimePass = new Date(event.startTime) > new Date();
+
+        if (
+            !isStatTimePass && 
+            event.status !== EVENTS_STATUS.COMPLETED &&
+            event.status !== EVENTS_STATUS.CANCELLED
+        ) {
+            event.status = EVENTS_STATUS.LIVE
+            status = EVENTS_STATUS.LIVE
+        }
 
         if ([EVENTS_STATUS.LIVE, EVENTS_STATUS.CANCELLED, EVENTS_STATUS.COMPLETED].includes(event.status)) {
             isTrending = false;
         } else {
-
             if (event.views as number > 1000) {
                 isTrending = true;
             }
@@ -266,7 +301,7 @@ const updateAllEventsTrendingStatus = async () => {
         return {
             updateOne: {
                 filter: { _id: event._id },
-                update: { $set: { isTrending } },
+                update: { $set: { isTrending, status } },
             },
         };
     });
@@ -283,6 +318,7 @@ export const eventServices = {
     createEventsIntoDB,
     getSingleEventByEventId,
     getAllEvents,
+    getFollowingUserEvents,
     getAllEventsOfCreator,
     cancelMyEventById,
     updateAllEventsTrendingStatus,

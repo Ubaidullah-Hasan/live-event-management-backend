@@ -13,6 +13,7 @@ import generateOTP from '../../../util/generateOTP';
 import { emailTemplate } from '../../../shared/emailTemplate';
 import { emailHelper } from '../../../helpers/emailHelper';
 import { IVerifyEmail } from '../auth/atuh.interface';
+import { EVENTS_STATUS } from '../events/events.constants';
 
 /**
  * create and verify email
@@ -177,6 +178,11 @@ const getCreatorProfileFromDB = async (creatorId: string) => {
   let followersCount = await Follow.countDocuments({ followingId: creatorId });
   let eventCount = await Event.countDocuments({ createdBy: creatorId });
 
+  const upcommingEvents = await Event.find({
+    createdBy: creatorId,
+    status: EVENTS_STATUS.UPCOMING,
+  })
+
 
 
   let user = isExistUser.toObject();
@@ -184,6 +190,7 @@ const getCreatorProfileFromDB = async (creatorId: string) => {
   // Add the new properties
   user.followersCount = followersCount;
   user.eventCount = eventCount;
+  (user as any).upCommingEvents = upcommingEvents;
 
   return user;
 };

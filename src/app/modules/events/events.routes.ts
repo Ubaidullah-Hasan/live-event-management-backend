@@ -32,6 +32,11 @@ router.get("/",
     eventController.getAllEvents
 );
 
+router.get("/following-users-events",
+    auth(USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN, USER_ROLE.USER),
+    eventController.getFollowingUserEvents
+);
+
 router.get("/selected-categories-events",
     auth(USER_ROLE.USER),
     eventController.getMyFavouriteEvents

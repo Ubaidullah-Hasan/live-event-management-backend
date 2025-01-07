@@ -18,7 +18,7 @@ const createEvents = catchAsync(async (req: Request, res: Response) => {
 
 const getSingleEventByEventId = catchAsync(async (req: Request, res: Response) => {
     const { eventId } = req.params;
-    const {id} = req.user;
+    const { id } = req.user;
 
     const result = await eventServices.getSingleEventByEventId(eventId, id);
 
@@ -59,9 +59,23 @@ const getAllEvents = catchAsync(async (req: Request, res: Response) => {
 });
 
 
+const getFollowingUserEvents = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.user;
+    const result = await eventServices.getFollowingUserEvents(req.query, id);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Following users events retrived successfully!',
+        data: result,
+    });
+});
+
+
+
 // find all the events which categories is select user
 const getMyFavouriteEvents = catchAsync(async (req: Request, res: Response) => {
-    const {id} = req.user;
+    const { id } = req.user;
     const result = await eventServices.getMyFavouriteEvents(req.query, id);
 
     sendResponse(res, {
@@ -131,6 +145,7 @@ export const eventController = {
     createEvents,
     getSingleEventByEventId,
     getAllEvents,
+    getFollowingUserEvents,
     getAllEventsOfCreator,
     cancelMyEventById,
     updateAllEventsTrendingStatus,
