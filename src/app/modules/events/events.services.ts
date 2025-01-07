@@ -257,6 +257,7 @@ const cancelMyEventById = async (eventId: string, creatorId: string) => {
 }
 
 
+
 const updateAllEventsTrendingStatus = async () => {
     const events = await Event.find()
         .select("isTrending soldSeat views startTime status");
@@ -269,7 +270,7 @@ const updateAllEventsTrendingStatus = async () => {
         const isStatTimePass = new Date(event.startTime) > new Date();
 
         if (
-            !isStatTimePass && 
+            !isStatTimePass &&
             event.status !== EVENTS_STATUS.COMPLETED &&
             event.status !== EVENTS_STATUS.CANCELLED
         ) {
@@ -314,6 +315,29 @@ const updateAllEventsTrendingStatus = async () => {
 
 
 
+const updateSingleEventByEventId = async (eventId: string, logedInId: string, payload: Partial<IEvent>) => {
+    if (!mongoose.isValidObjectId(eventId)) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid event ID.")
+    }
+    
+    const existEvent = await Event.findById(eventId);
+    if (!existEvent) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "This event not found.")
+    }
+    
+    if (existEvent.createdBy.toString() !== logedInId) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "You can't edit another creator event.")
+    }
+
+    const result = await Event.findByIdAndUpdate(eventId,
+        payload,
+        { new: true }
+    )
+
+    return result;
+}
+
+
 export const eventServices = {
     createEventsIntoDB,
     getSingleEventByEventId,
@@ -325,4 +349,5 @@ export const eventServices = {
     getSingleSlfEventAnalysisByEventId,
     creatorEventOverview,
     getMyFavouriteEvents,
+    updateSingleEventByEventId,
 }

@@ -36,6 +36,25 @@ export const eventCreateValidationSchema = z.object({
 
 export const validateEvent = (data: unknown) => eventCreateValidationSchema.parse(data);
 
+const eventUpdateValidationSchema = z.object({
+  body: z.object({
+    eventName: z.string({ required_error: "Event name is required" }).min(3, "Event name must be at least 3 characters long").optional(),
+    image: z
+      .string({ message: "Image must be a valid" })
+      .regex(
+        /^\/images\/([\w-]+\/)?[\w-]+\.(png|jpeg|jpg)$/i,
+        { message: "Image path must start with '/images/' and end with .png, .jpeg, or .jpg" }
+      ).optional(),
+    description: z.string({ required_error: "Description is required" }).min(10, "Description must be at least 10 characters long").optional(),
+    eventType: z.enum([EVENTS_TYPE.VIRTUAL, EVENTS_TYPE.OFFLINE], { required_error: "Event type is required" }).optional(),
+   
+    startTime: z.string({ required_error: "Start time is required", invalid_type_error: "Start time will be date formate." }).refine((date) => !isNaN(new Date(date).getTime()), {
+      message: "Invalid start time format",
+    }).optional(),
+  })
+});
+
 export const eventValidationSchema = {
-  eventCreateValidationSchema
+  eventCreateValidationSchema,
+  eventUpdateValidationSchema
 }

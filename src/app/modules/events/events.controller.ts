@@ -138,7 +138,19 @@ const updateAllEventsTrendingStatus = async () => {
 };
 
 
+const updateSingleEventByEventId = catchAsync(async (req: Request, res: Response) => {
+    const { eventId } = req.params;
+    const { id } = req.user;
 
+    const result = await eventServices.updateSingleEventByEventId(eventId, id, req.body);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Event retrived successfully!',
+        data: result,
+    });
+});
 
 
 export const eventController = {
@@ -152,4 +164,5 @@ export const eventController = {
     getSingleSlfEventAnalysisByEventId,
     creatorEventOverview,
     getMyFavouriteEvents,
+    updateSingleEventByEventId,
 }    

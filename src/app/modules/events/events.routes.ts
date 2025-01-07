@@ -64,5 +64,11 @@ cron.schedule("0 * * * *",
     eventController.updateAllEventsTrendingStatus
 );
 
+router.patch("/:eventId",
+    auth(USER_ROLE.CREATOR),
+    validateRequest(eventValidationSchema.eventUpdateValidationSchema),
+    eventController.updateSingleEventByEventId
+);
+
 
 export const EventRoutes = router;
