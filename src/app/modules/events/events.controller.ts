@@ -87,9 +87,9 @@ const getMyFavouriteEvents = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllEventsOfCreator = catchAsync(async (req: Request, res: Response) => {
-    const { creatorId } = req.params;
+    const { id } = req.user;
 
-    const result = await eventServices.getAllEventsOfCreator(req.query, creatorId);
+    const result = await eventServices.getAllEventsOfCreator(req.query, id);
 
     sendResponse(res, {
         success: true,

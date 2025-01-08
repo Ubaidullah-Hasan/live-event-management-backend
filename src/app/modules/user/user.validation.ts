@@ -51,6 +51,13 @@ const userRoleChangeZodSchema = z.object({
 });
 
 
+const userDeleteZodSchema = z.object({
+  body: z.object({
+    password: z.string().min(8, "Password must be at least 8 characters"),
+  })
+});
+
+
 
 export const UserValidation = {
   createUserZodSchema,
@@ -58,5 +65,6 @@ export const UserValidation = {
   updateFavouriteCategoryZodSchema,
   userChangeStatusZodSchema,
   userRoleChangeZodSchema,
+  userDeleteZodSchema,
   // updateProfileZodSchema,
 };

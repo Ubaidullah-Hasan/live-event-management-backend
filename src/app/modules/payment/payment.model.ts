@@ -5,7 +5,6 @@ import { PAYMENT_STATUS } from "./payment.constant";
 const paymentSchema = new Schema<IPayment>(
     {
         userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-        eventCreator: { type: Schema.Types.ObjectId, ref: "User", required: true },
         eventId: { type: Schema.Types.ObjectId, ref: "Event", required: true },
         transactionId: { type: String, unique: true, required: true },
         amount: { type: Number, required: true },

@@ -44,7 +44,8 @@ router.patch("/favourite-category",
 
 
 router.delete("/delete-me",
-  auth(USER_ROLE.USER, USER_ROLE.CREATOR), // TODO: CAN SUPER_ADMIN DELETE HIM?
+  auth(USER_ROLE.USER, USER_ROLE.CREATOR),
+  validateRequest(UserValidation.userDeleteZodSchema),
   UserController.deleteCurrentUser
 )
 

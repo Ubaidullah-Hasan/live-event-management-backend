@@ -23,7 +23,8 @@ router.get("/single-event/:eventId",
     eventController.getSingleEventByEventId
 );
 
-router.get("/user-events/:creatorId",
+router.get("/user-events",
+    auth(USER_ROLE.CREATOR),
     eventController.getAllEventsOfCreator
 )
 

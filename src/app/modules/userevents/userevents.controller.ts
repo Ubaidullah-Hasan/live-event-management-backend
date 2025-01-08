@@ -49,5 +49,5 @@ const deleteUserEvent = catchAsync(async (req: Request, res: Response) => {
 export const UserEventController = {
     createUserEvent,
     getEventsFilterByType,
-    deleteUserEvent
+    deleteUserEvent,
 };

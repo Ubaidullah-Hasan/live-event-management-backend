@@ -213,7 +213,16 @@ const userFavouriteCategoryUpdate = async (id: string, categoryId: string) => {
   return result;
 }
 
-const deleteCurrentUser = async (userId: string) => {
+const deleteCurrentUser = async (userId: string, password:string) => {
+  const isExistUser = await User.findById(userId);
+
+  if (isExistUser &&
+    password &&
+    !(await User.isMatchPassword(password, isExistUser.password))
+  ) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Password is incorrect!');
+  }
+
   await User.findByIdAndUpdate(userId,
     { isDeleted: true },
     { new: true }

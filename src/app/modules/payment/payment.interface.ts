@@ -3,7 +3,6 @@ import { PAYMENT_STATUS } from "./payment.constant";
 
 export interface IPayment extends Document {
     userId: ObjectId;
-    eventCreator: ObjectId;
     eventId: ObjectId;
     transactionId: string;
     amount: number;

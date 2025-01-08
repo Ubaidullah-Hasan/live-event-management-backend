@@ -38,7 +38,7 @@ const getSingleEventByEventId = async (id: string, loginUserId: string) => {
     }
 
     const event = await Event.findById(id)
-        .select("createdBy eventName image description eventType ticketPrice startTime")
+        .select("createdBy eventName image description eventType ticketPrice startTime soldTicket")
         .populate("createdBy", "name photo");
 
     // check user is following this creator
@@ -90,14 +90,14 @@ const getSingleSlfEventAnalysisByEventId = async (id: string, timeframe = "6mont
     const event = await Event.findOne({
         _id: id
     })
-        .select("eventName image")
+        .select("eventName image soldTicket totalSale")
         .lean();
 
     const participants = await AttendanceModel.find({
         eventId: id,
         createdAt: { $gte: filterDate }
     })
-        .populate("userId", "name photo ");
+        .populate("userId", "name photo");
 
     const payment = await Payment.aggregate([
         {
@@ -153,8 +153,11 @@ const creatorEventOverview = async (creatorId: string) => {
         }
     ]);
 
+    const eventData = events;
+    eventData[0].type = EVENTS_TYPE.VIRTUAL;
 
-    return events;
+
+    return eventData;
 }
 
 

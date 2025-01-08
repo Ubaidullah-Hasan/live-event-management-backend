@@ -8,13 +8,13 @@ import { UserEventController } from "./userevents.controller";
 const router = Router();
 
 router.post("/",
-    auth(USER_ROLE.USER),
+    auth(USER_ROLE.USER,USER_ROLE.CREATOR),
     validateRequest(userEventValidationSchema),
     UserEventController.createUserEvent
 )
 
 router.get("/",
-    auth(USER_ROLE.USER),
+    auth(USER_ROLE.USER, USER_ROLE.CREATOR),
     UserEventController.getEventsFilterByType
 );
 

@@ -35,6 +35,7 @@ const getEventsFilterByType = async (id: string, query: Record<string, unknown>)
 
 };
 
+
 const deleteUserEvent = async (userEventId: string) => {
     if (!mongoose.isValidObjectId(userEventId)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Event id is not valid!")

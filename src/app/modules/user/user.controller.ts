@@ -73,8 +73,9 @@ const userFavouriteCategoryUpdate = catchAsync(async (req: Request, res: Respons
 
 const deleteCurrentUser = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.user;
+  const { password } = req.body;
 
-  const result = await UserService.deleteCurrentUser(id);
+  const result = await UserService.deleteCurrentUser(id, password);
 
   sendResponse(res, {
     success: true,
