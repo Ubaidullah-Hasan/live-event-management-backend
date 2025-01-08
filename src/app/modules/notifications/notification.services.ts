@@ -15,6 +15,18 @@ const markNotificationAsRead = async (notificationId: string, io: ServerOptions)
     return result;
 };
 
+const markAllNotificationAsRead = async (io: ServerOptions) => {
+    const result = await NotificationModel.updateMany({},
+        { isRead: true }, { new: true }
+    );
+
+    // if (!result) {
+    //     throw new ApiError(StatusCodes.BAD_REQUEST, 'Notification not found!');
+    // }
+
+    return result;
+};
+
 
 const sendNotificationToUser = async (payload: INotification, io: Server) => {
     const result = await NotificationModel.create(payload);
@@ -82,6 +94,7 @@ const deleteAllMyNotification = async (userId: string) => {
 
 export const NotificationServices = {
     markNotificationAsRead,
+    markAllNotificationAsRead,
     sendNotificationToUser,
     getAllNotificationOfReciver,
     sendNotificationToAll,

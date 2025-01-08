@@ -17,6 +17,20 @@ const markNotificationAsRead = catchAsync(async (req, res) => {
     });
 });
 
+
+const markAllNotificationAsRead = catchAsync(async (req, res) => {
+    // @ts-ignore
+    const io = global.io;
+    const result = await NotificationServices.markAllNotificationAsRead(io);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Mark read all notification successfully!',
+        data: result,
+    });
+});
+
 const sendNotificationToUser = catchAsync(async (req, res) => {
     // @ts-ignore
     const io = global.io;
@@ -75,6 +89,7 @@ const deleteAllMyNotification = catchAsync(async (req, res) => {
 
 export const NotificationController = {
     markNotificationAsRead,
+    markAllNotificationAsRead,
     sendNotificationToUser,
     getAllNotificationOfReciver,
     sendNotificationToAll,

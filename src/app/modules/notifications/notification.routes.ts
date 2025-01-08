@@ -11,6 +11,10 @@ router.patch("/mark-read/:notificationId",
     NotificationController.markNotificationAsRead
 );
 
+router.patch("/mark-read-all-notifications",
+    NotificationController.markAllNotificationAsRead
+);
+
 router.post("/send-notification",
     validateRequest(notificationValidation.notificationCreateValidationSchema),
     NotificationController.sendNotificationToUser

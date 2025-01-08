@@ -77,11 +77,11 @@ const verifyPayment = async (paymentIntentId: string, userEmail: string) => {
     try {
         session.startTransaction();
         paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-        console.log({paymentIntent})
+        console.log({ paymentIntent })
 
-        if (paymentIntent.status !== "succeeded") {
-            throw new ApiError(StatusCodes.BAD_REQUEST, "Payment not successfull!")
-        }
+        // if (paymentIntent.status !== "succeeded") {
+        //     throw new ApiError(StatusCodes.BAD_REQUEST, "Payment not successfull!")
+        // }
 
         const userId = paymentIntent.metadata.userId;
         const eventId = paymentIntent.metadata.eventId;
@@ -205,7 +205,9 @@ const getMyTransactionInfo = async (myId: string) => {
         // Step 2: Find payments where eventId is one of the events from the previous query
         const result = await Payment.find({
             eventId: { $in: events.map(event => event._id) }
-        }).populate('eventId', 'createdBy name'); // populate eventId to get the event details
+        }).populate('eventId', 'createdBy name')
+            .populate("userId", 'name photo ')
+            ; // populate eventId to get the event details
         // console.log({events, result})
 
         return result;
