@@ -14,4 +14,11 @@ router.post(
     reporteController.createReport
 )
 
+
+router.get(
+    "/",
+    auth(USER_ROLE.SUPER_ADMIN),
+    reporteController.getAllReportBySuperAdmin
+)
+
 export const ReportRoutes = router;

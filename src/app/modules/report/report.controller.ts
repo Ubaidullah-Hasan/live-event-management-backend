@@ -17,7 +17,20 @@ const createReport = catchAsync(async (req, res) => {
     });
 });
 
+const getAllReportBySuperAdmin = catchAsync(async (req, res) => {
+
+    const result = await reportServices.getAllReportBySuperAdmin();
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Retrived all reporte.',
+        data: result,
+    });
+});
+
 
 export const reporteController = {
-    createReport
+    createReport,
+    getAllReportBySuperAdmin
 }

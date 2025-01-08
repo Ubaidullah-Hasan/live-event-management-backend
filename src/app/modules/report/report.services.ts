@@ -4,7 +4,7 @@ import { User } from "../user/user.model"
 import { Report } from "./report.model";
 
 const createReportIntoDB = async (reportPersonId: string, text: string, selfId: string) => {
-    
+
     await User.isUserPermission(selfId);
 
     const existUser = await User.findById(reportPersonId);
@@ -24,6 +24,13 @@ const createReportIntoDB = async (reportPersonId: string, text: string, selfId: 
     return result;
 }
 
+const getAllReportBySuperAdmin = async () => {
+    const reports = await Report.find().sort("-createdAt");
+    return reports;
+}
+
+
 export const reportServices = {
     createReportIntoDB,
+    getAllReportBySuperAdmin
 }
