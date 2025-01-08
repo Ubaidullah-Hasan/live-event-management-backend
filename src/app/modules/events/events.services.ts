@@ -307,7 +307,7 @@ const updateAllEventsTrendingStatus = async () => {
         };
     });
 
-    // Bulk update 
+    // Bulk update
     await Event.bulkWrite(bulkOperations);
 
     console.log("Trending status updated for all events");
@@ -319,12 +319,12 @@ const updateSingleEventByEventId = async (eventId: string, logedInId: string, pa
     if (!mongoose.isValidObjectId(eventId)) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid event ID.")
     }
-    
+
     const existEvent = await Event.findById(eventId);
     if (!existEvent) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "This event not found.")
     }
-    
+
     if (existEvent.createdBy.toString() !== logedInId) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "You can't edit another creator event.")
     }

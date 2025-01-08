@@ -60,7 +60,7 @@ router.get("/creator-events-overview",
 );
 
 
-cron.schedule("0 * * * *",
+cron.schedule("*/30 * * * *",
     eventController.updateAllEventsTrendingStatus
 );
 

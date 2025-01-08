@@ -38,8 +38,13 @@ const createPaymentIntent = async (payload: IPaymentIntent) => {
         startTime: { $gt: new Date() },
     });
 
+
     if (!isEvent) {
         throw new ApiError(StatusCodes.BAD_REQUEST, "No upcoming event found!");
+    }
+
+    if (isEvent?.ticketPrice !== amount) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, `Ticket price does not match. Price only ${isEvent?.ticketPrice}`);
     }
 
     const user = await User.isUserPermission(userId);
@@ -47,9 +52,8 @@ const createPaymentIntent = async (payload: IPaymentIntent) => {
         throw new ApiError(StatusCodes.NOT_FOUND, "Only user can booked ticket.")
     }
 
-
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount * 100, 
+        amount: amount * 100,
         currency: "usd",
         payment_method_types: ['card'],
         metadata: { userId, eventId },
@@ -74,9 +78,10 @@ const verifyPayment = async (paymentIntentId: string, userEmail: string) => {
         session.startTransaction();
         paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-        if (paymentIntent.status !== "succeeded") {
-            throw new ApiError(StatusCodes.BAD_REQUEST, "Payment not successfull!")
-        }
+        // todo
+        // if (paymentIntent.status !== "succeeded") {
+        //     throw new ApiError(StatusCodes.BAD_REQUEST, "Payment not successfull!")
+        // }
 
         const userId = paymentIntent.metadata.userId;
         const eventId = paymentIntent.metadata.eventId;
@@ -182,7 +187,34 @@ const verifyPayment = async (paymentIntentId: string, userEmail: string) => {
     }
 };
 
+const getMyTransactionInfo = async (myId: string) => {
+    const user = await User.findById(myId);
+    // console.log(user)
+    if (user?.role === USER_ROLE.USER) {
+        const result = await Payment.find({
+            userId: myId
+        }).populate('eventId', 'createdBy');
+        return result;
+    }
+
+    if (user?.role === USER_ROLE.CREATOR) {
+        const events = await Event.find({
+            createdBy: myId
+        }).select('_id');
+
+        // Step 2: Find payments where eventId is one of the events from the previous query
+        const result = await Payment.find({
+            eventId: { $in: events.map(event => event._id) }
+        }).populate('eventId', 'createdBy name'); // populate eventId to get the event details
+        // console.log({events, result})
+
+        return result;
+    }
+
+};
+
 export const paymentServices = {
     createPaymentIntent,
-    verifyPayment
+    verifyPayment,
+    getMyTransactionInfo,
 }

@@ -21,4 +21,10 @@ router.post("/verify-payment",
 )
 
 
+router.get("/get-transaction-info",
+    auth(USER_ROLE.CREATOR, USER_ROLE.USER),
+    paymentController.getMyTransactionInfo
+)
+
+
 export const PaymentRoutes = router;

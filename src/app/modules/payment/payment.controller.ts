@@ -17,7 +17,7 @@ const createPaymentIntent = catchAsync(async (req, res) => {
 
 const verifyPayment = catchAsync(async (req, res) => {
     const { paymentIntentId } = req.body;
-    const {email} = req.user;
+    const { email } = req.user;
 
     const result = await paymentServices.verifyPayment(paymentIntentId, email);
 
@@ -29,9 +29,20 @@ const verifyPayment = catchAsync(async (req, res) => {
     });
 })
 
+const getMyTransactionInfo = catchAsync(async (req, res) => {
+    const { id } = req.user;
+    const result = await paymentServices.getMyTransactionInfo(id);
 
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Transition information retrived successfully.',
+        data: result,
+    });
+})
 
 export const paymentController = {
     createPaymentIntent,
     verifyPayment,
+    getMyTransactionInfo,
 }
