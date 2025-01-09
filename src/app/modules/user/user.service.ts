@@ -29,7 +29,7 @@ const createUserToDB = async (payload: Partial<IUser>): Promise<null> => {
     throw new ApiError(StatusCodes.BAD_GATEWAY, "Your password does't match!")
   }
 
-  const isEmailExit = await User.findOne({ email: payload.email });
+  const isEmailExit = await User.findOne({ email: payload.email, isDeleted: false });
 
   if (isEmailExit) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Email already exist")
@@ -52,7 +52,7 @@ const createUserToDB = async (payload: Partial<IUser>): Promise<null> => {
   emailHelper.sendEmail(registerEmailTem);
 
   //save to DB
-  await User.findOneAndUpdate({ email: createUser.email },
+  await User.findOneAndUpdate({ email: createUser.email, isDeleted: false },
     {
       $set: {
         'otpVerification.otp': otp,
@@ -74,7 +74,7 @@ const verifyRegisterEmail = async (email: string, otp: string) => {
     );
   }
 
-  const isExistUser = await User.findOne({ email }).select('+otpVerification');
+  const isExistUser = await User.findOne({ email, isDeleted: false }).select('+otpVerification');
 
   if (isExistUser?.isVarified) {
     throw new ApiError(

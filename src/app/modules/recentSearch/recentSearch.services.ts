@@ -22,7 +22,7 @@ const createRecentSearch = async (queryText: string, userId: string) => {
             query: queryText,
         } as any);
 
-        // Ensure the searches array only contains the latest 5 items
+        // Ensure the searches array only contains the latest 10 items
         if (recentSearch.searches.length > 10) {
             recentSearch.searches = recentSearch.searches.slice(0, 10);
         }

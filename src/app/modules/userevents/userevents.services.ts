@@ -32,7 +32,6 @@ const getEventsFilterByType = async (id: string, query: Record<string, unknown>)
         .populate('eventId', 'eventName image startTime soldSeat')
 
     return result;
-
 };
 
 
@@ -49,6 +48,8 @@ const deleteUserEvent = async (userEventId: string) => {
 
     return null;
 }
+
+
 
 
 export const UserEventServices = {

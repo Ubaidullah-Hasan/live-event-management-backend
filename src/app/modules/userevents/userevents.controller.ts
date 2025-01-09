@@ -50,4 +50,5 @@ export const UserEventController = {
     createUserEvent,
     getEventsFilterByType,
     deleteUserEvent,
+    
 };

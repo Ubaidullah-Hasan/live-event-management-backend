@@ -8,7 +8,6 @@ import { jwtHelper } from '../../../helpers/jwtHelper';
 import { emailTemplate } from '../../../shared/emailTemplate';
 import cryptoToken from '../../../util/cryptoToken';
 import generateOTP from '../../../util/generateOTP';
-import { ResetToken } from '../resetToken/resetToken.model';
 import { User } from '../user/user.model';
 import { USER_STATUS } from '../user/user.constants';
 import { IAuthResetPassword, IChangePassword, IVerifyEmail, TLoginUser } from './atuh.interface';
@@ -16,8 +15,8 @@ import { IAuthResetPassword, IChangePassword, IVerifyEmail, TLoginUser } from '.
 //login
 const loginUserFromDB = async (payload: TLoginUser) => {
   const { email, password } = payload;
-  const isExistUser = await User.findOne({ email }).select('+password');
-  
+  const isExistUser = await User.findOne({ email, isDeleted: false }).select('+password');
+
   if (!isExistUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
   }
@@ -76,12 +75,6 @@ const forgetPasswordToDB = async (email: string) => {
     );
   }
 
-  if (isExistUser.isDeleted) {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      'User is deleted!'
-    );
-  }
 
   //send mail
   const otp = generateOTP();
@@ -109,7 +102,15 @@ const forgetPasswordToDB = async (email: string) => {
 //verify email
 const verifyEmailToDB = async (payload: IVerifyEmail) => {
   const { email, oneTimeCode } = payload;
-  const isExistUser = await User.findOne({ email }).select('+otpVerification');
+
+  if (!oneTimeCode) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'OTP needed! Please check your email we send a code!'
+    );
+  }
+
+  const isExistUser = await User.findOne({ email, isDeleted: false }).select('+otpVerification');
 
   if (!isExistUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
@@ -121,20 +122,7 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
       'User are bloocked!'
     );
   }
-
-  if (isExistUser.isDeleted) {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      'User is deleted!'
-    );
-  }
-
-  if (!oneTimeCode) {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      'OTP needed! Please check your email we send a code!'
-    );
-  }
+  
 
   if (isExistUser?.otpVerification?.otp !== oneTimeCode) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'You provided wrong otp');
@@ -287,8 +275,8 @@ const changePasswordToDB = async (
 const refreshToken = async (token: string) => {
 
   const decoded = jwtHelper.verifyToken(token, config.jwt.jwt_refresh as string);
-  
-  const { id, iat } = decoded; 
+
+  const { id, iat } = decoded;
 
   // checking if the user is exist
   const user = await User.findById(id);
@@ -318,7 +306,7 @@ const refreshToken = async (token: string) => {
     config.jwt.jwt_expire_in as string
   );
 
-  return {accessToken};
+  return { accessToken };
 }
 
 
