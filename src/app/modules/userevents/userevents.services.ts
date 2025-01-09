@@ -18,7 +18,7 @@ const createUserEventIntoDB = async (id: string, payload: Partial<IUserEvent>) =
     }
 
     const result = await UserEvent.create(
-        { ...payload, userId: user._id }
+        { ...payload, userId: user._id, type: USER_EVENT_TYPE.SAVED }
     );
     return result;
 };
@@ -105,7 +105,6 @@ const addEventsToHistoryCreatorAndUser = async () => {
         }
     }
 
-    // ব্যাচ অপারেশন চালানো
     if (bulkOperations.length > 0) {
         await UserEvent.bulkWrite(bulkOperations);
         console.log(`${bulkOperations.length} operations executed.`);

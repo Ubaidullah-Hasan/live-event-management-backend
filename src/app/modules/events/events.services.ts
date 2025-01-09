@@ -341,6 +341,64 @@ const updateSingleEventByEventId = async (eventId: string, logedInId: string, pa
 }
 
 
+const myParticipantsEvents = async (logedInId: string) => {
+    const events = await AttendanceModel.aggregate([
+        {
+            $match: { userId: new mongoose.Types.ObjectId(logedInId) }
+        },
+        {
+            $lookup: {
+                from: "events", // Name of the Event collection
+                localField: "eventId",
+                foreignField: "_id",
+                as: "eventDetails",
+                pipeline: [
+                    { 
+                        $project: { 
+                            _id: 1, 
+                            eventName: 1, 
+                            image: 1,
+                            status: 1
+                        } 
+                    }
+                ]
+            }
+        },
+        {
+            $unwind: "$eventDetails"
+        },
+        {
+            $match: { "eventDetails.status": EVENTS_STATUS.UPCOMING }
+        },
+        {
+            $project: {
+                _id: 1,
+                userId: 1,
+                eventDetails: 1 // Include only relevant fields
+            }
+        },
+        // {
+        //     $group: {
+        //         _id: null, // Group all documents together
+        //         events: { $push: "$$ROOT" }, // Push all documents into an array
+        //         count: { $sum: 1 } // Count the number of documents
+        //     }
+        // },
+        // {
+        //     $project: {
+        //         _id: 0, // Exclude the _id field
+        //         events: 1,
+        //         count: 1 // Include the count field
+        //     }
+        // }
+    ]);
+
+    const count = events.length;
+
+    return {events, count};
+}
+
+
 export const eventServices = {
     createEventsIntoDB,
     getSingleEventByEventId,
@@ -353,4 +411,5 @@ export const eventServices = {
     creatorEventOverview,
     getMyFavouriteEvents,
     updateSingleEventByEventId,
+    myParticipantsEvents,
 }

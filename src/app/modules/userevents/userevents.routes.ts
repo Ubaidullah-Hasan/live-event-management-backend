@@ -9,7 +9,7 @@ import cron from "node-cron";
 const router = Router();
 
 router.post("/",
-    auth(USER_ROLE.USER,USER_ROLE.CREATOR),
+    auth(USER_ROLE.USER),
     validateRequest(userEventValidationSchema),
     UserEventController.createUserEvent
 )

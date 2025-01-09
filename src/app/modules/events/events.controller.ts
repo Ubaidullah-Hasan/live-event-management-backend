@@ -153,6 +153,20 @@ const updateSingleEventByEventId = catchAsync(async (req: Request, res: Response
 });
 
 
+const myParticipantsEvents = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.user;
+
+    const result = await eventServices.myParticipantsEvents(id);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Creator events analysis data retrived successfully!',
+        data: result,
+    });
+});
+
+
 export const eventController = {
     createEvents,
     getSingleEventByEventId,
@@ -165,4 +179,5 @@ export const eventController = {
     creatorEventOverview,
     getMyFavouriteEvents,
     updateSingleEventByEventId,
+    myParticipantsEvents,
 }    

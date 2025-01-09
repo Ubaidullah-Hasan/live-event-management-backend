@@ -28,7 +28,21 @@ const getSingleTicket = catchAsync(async (req, res) => {
 });
 
 
+const isMyTicket = catchAsync(async (req, res) => {
+    const { secretCode, ticketId } = req.body;
+    const { id } = req.user;
+    const ticket = await TicketServices.isMyTicket(secretCode,ticketId, id);
+    sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Check your secret code!',
+        data: ticket,
+    });
+});
+
+
 export const TicketsController = {
     getSelfTickets,
     getSingleTicket,
+    isMyTicket,
 };

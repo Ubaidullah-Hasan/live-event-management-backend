@@ -72,4 +72,10 @@ router.patch("/:eventId",
 );
 
 
+router.get("/my-booking-events",
+    auth(USER_ROLE.USER),
+    eventController.myParticipantsEvents
+);
+
+
 export const EventRoutes = router;
