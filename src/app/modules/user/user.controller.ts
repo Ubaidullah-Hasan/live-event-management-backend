@@ -42,6 +42,19 @@ const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+const getNormalUserFromDB = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await UserService.getNormalUserFromDB(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'User retrieved successfully',
+    data: result,
+  });
+});
+
 const getCreatorProfile = catchAsync(async (req: Request, res: Response) => {
   const { creatorId } = req.params;
   const result = await UserService.getCreatorProfileFromDB(creatorId);
@@ -169,4 +182,5 @@ export const UserController = {
   getCreatorProfile,
   toggleUserRole,
   bestSellerCreators,
+  getNormalUserFromDB,
 };

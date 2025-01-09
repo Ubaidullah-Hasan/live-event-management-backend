@@ -162,6 +162,21 @@ const getUserProfileFromDB = async (
   return isExistUser;
 };
 
+const getNormalUserFromDB = async (id: string) => {
+  const isExistUser = await User.findById(id)
+    .lean()
+    .select("name photo email phone");
+
+  let followingCount = await Follow.countDocuments({
+    userId: id
+  })
+
+  let user = isExistUser;
+  (user as any).followingCount = followingCount;
+
+  return user;
+};
+
 const getCreatorProfileFromDB = async (creatorId: string) => {
   const isExistUser = await User.findById(creatorId)
     .select("name bio description photo role");
@@ -213,7 +228,7 @@ const userFavouriteCategoryUpdate = async (id: string, categoryId: string) => {
   return result;
 }
 
-const deleteCurrentUser = async (userId: string, password:string) => {
+const deleteCurrentUser = async (userId: string, password: string) => {
   const isExistUser = await User.findById(userId);
 
   if (isExistUser &&
@@ -361,4 +376,5 @@ export const UserService = {
   getCreatorProfileFromDB,
   toggleUserRole,
   bestSellerCreators,
+  getNormalUserFromDB,
 };

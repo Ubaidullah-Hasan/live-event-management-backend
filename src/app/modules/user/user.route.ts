@@ -25,6 +25,12 @@ router.get(
   UserController.getUserProfile
 );
 
+router.get(
+  '/normal-user/:userId',
+  auth(USER_ROLE.CREATOR, USER_ROLE.USER, USER_ROLE.SUPER_ADMIN),
+  UserController.getNormalUserFromDB
+);
+
 router.get("/best-seller-creators",
   // auth(USER_ROLE.USER, USER_ROLE.CREATOR, USER_ROLE.SUPER_ADMIN),
   UserController.bestSellerCreators
