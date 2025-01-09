@@ -30,10 +30,10 @@ const getEventsFilterByType = async (id: string, query: Record<string, unknown>)
         .paginate()
         .filter()
 
-    const result = await userEvents.modelQuery
+    const events = await userEvents.modelQuery
         .populate('eventId', 'eventName image startTime soldSeat')
 
-    return result;
+    return {events, count: events.length};
 };
 
 

@@ -171,6 +171,20 @@ const bestSellerCreators = catchAsync(async (req: Request, res: Response) => {
 });
 
 
+const creatorTotalBalance = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.user;
+  
+  const result = await UserService.creatorTotalBalance(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Total balance of creator.',
+    data: result,
+  });
+});
+
+
 export const UserController = {
   createUser,
   verifyRegisterEmail,
@@ -183,4 +197,5 @@ export const UserController = {
   toggleUserRole,
   bestSellerCreators,
   getNormalUserFromDB,
+  creatorTotalBalance,
 };

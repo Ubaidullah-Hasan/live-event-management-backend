@@ -353,13 +353,14 @@ const myParticipantsEvents = async (logedInId: string) => {
                 foreignField: "_id",
                 as: "eventDetails",
                 pipeline: [
-                    { 
-                        $project: { 
-                            _id: 1, 
-                            eventName: 1, 
+                    {
+                        $project: {
+                            _id: 1,
+                            eventName: 1,
                             image: 1,
-                            status: 1
-                        } 
+                            status: 1,
+                            startTime: 1
+                        }
                     }
                 ]
             }
@@ -371,12 +372,16 @@ const myParticipantsEvents = async (logedInId: string) => {
             $match: { "eventDetails.status": EVENTS_STATUS.UPCOMING }
         },
         {
+            $sort: { "eventDetails.startTime": 1 } // Sort by startTime in ascending order
+        },
+        {
             $project: {
                 _id: 1,
                 userId: 1,
                 eventDetails: 1 // Include only relevant fields
             }
         },
+
         // {
         //     $group: {
         //         _id: null, // Group all documents together
@@ -395,7 +400,7 @@ const myParticipantsEvents = async (logedInId: string) => {
 
     const count = events.length;
 
-    return {events, count};
+    return { events, count };
 }
 
 

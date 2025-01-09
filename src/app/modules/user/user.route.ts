@@ -36,11 +36,13 @@ router.get("/best-seller-creators",
   UserController.bestSellerCreators
 )
 
-router.get(
-  '/:creatorId',
-  auth(USER_ROLE.CREATOR, USER_ROLE.USER, USER_ROLE.SUPER_ADMIN),
-  UserController.getCreatorProfile
+
+router.get("/creator-total-sale",
+  auth(USER_ROLE.CREATOR),
+  UserController.creatorTotalBalance
 );
+
+
 
 router.patch("/favourite-category",
   validateRequest(UserValidation.updateFavouriteCategoryZodSchema),
@@ -73,6 +75,16 @@ router.patch("/switch-user-role",
   validateRequest(UserValidation.userRoleChangeZodSchema),
   UserController.toggleUserRole
 );
+
+
+
+router.get(
+  '/:creatorId',
+  auth(USER_ROLE.CREATOR, USER_ROLE.USER, USER_ROLE.SUPER_ADMIN),
+  UserController.getCreatorProfile
+);
+
+
 
 
 export const UserRoutes = router;

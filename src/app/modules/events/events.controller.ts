@@ -161,7 +161,7 @@ const myParticipantsEvents = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
-        message: 'Creator events analysis data retrived successfully!',
+        message: 'My booking events retrived successfully!',
         data: result,
     });
 });

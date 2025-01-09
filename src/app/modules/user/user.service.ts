@@ -14,6 +14,8 @@ import { emailTemplate } from '../../../shared/emailTemplate';
 import { emailHelper } from '../../../helpers/emailHelper';
 import { IVerifyEmail } from '../auth/atuh.interface';
 import { EVENTS_STATUS } from '../events/events.constants';
+import { Payment } from '../payment/payment.model';
+import mongoose from 'mongoose';
 
 /**
  * create and verify email
@@ -365,6 +367,25 @@ const bestSellerCreators = async () => {
   return bestSeller;
 }
 
+const creatorTotalBalance = async (selfId: string) => {
+  console.log(selfId)
+  const result = await Event.aggregate([
+    {
+      $match: { createdBy: new mongoose.Types.ObjectId(selfId) } // Filter events by creator ID
+    },
+    {
+      $group: {
+        _id: "$createdBy", // Group by creator ID
+        totalSale: { $sum: "$totalSale" } // Sum of totalSale
+      }
+    }
+  ]);
+
+  const totalSale = result.length > 0 ? result[0].totalSale : 0; // If no sales, return 0
+
+  return {totalSale}
+}
+
 export const UserService = {
   createUserToDB,
   verifyRegisterEmail,
@@ -377,4 +398,5 @@ export const UserService = {
   toggleUserRole,
   bestSellerCreators,
   getNormalUserFromDB,
+  creatorTotalBalance,
 };
