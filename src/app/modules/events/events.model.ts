@@ -44,3 +44,9 @@ eventSchema.index({ createdBy: 1 })
 
 export const Event = model<IEvent>("Event", eventSchema);
 
+
+
+
+
+
+

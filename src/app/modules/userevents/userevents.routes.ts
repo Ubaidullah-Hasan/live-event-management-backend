@@ -4,6 +4,7 @@ import { USER_ROLE } from "../user/user.constants";
 import validateRequest from "../../middlewares/validateRequest";
 import { userEventValidationSchema } from "./userevents.validation";
 import { UserEventController } from "./userevents.controller";
+import cron from "node-cron";
 
 const router = Router();
 
@@ -21,6 +22,10 @@ router.get("/",
 router.delete("/:userEventId",
     auth(USER_ROLE.USER),
     UserEventController.deleteUserEvent
+);
+
+cron.schedule("*/30 * * * *",
+    UserEventController.addEventsToHistoryCreatorAndUser
 );
 
 

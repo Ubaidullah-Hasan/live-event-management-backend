@@ -34,7 +34,7 @@ const createPaymentIntent = async (payload: IPaymentIntent) => {
 
     const isEvent = await Event.findOne({
         _id: eventId,
-        status: EVENTS_STATUS.UPCOMING,
+        status: EVENTS_STATUS.UPCOMING, 
         startTime: { $gt: new Date() },
     });
 
@@ -79,9 +79,9 @@ const verifyPayment = async (paymentIntentId: string, userEmail: string) => {
         paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
         console.log({ paymentIntent })
 
-        // if (paymentIntent.status !== "succeeded") {
-        //     throw new ApiError(StatusCodes.BAD_REQUEST, "Payment not successfull!")
-        // }
+        if (paymentIntent.status !== "succeeded") {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Payment not successfull!")
+        }
 
         const userId = paymentIntent.metadata.userId;
         const eventId = paymentIntent.metadata.eventId;

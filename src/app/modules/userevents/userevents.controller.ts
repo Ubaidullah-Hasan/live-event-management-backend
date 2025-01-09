@@ -45,10 +45,19 @@ const deleteUserEvent = catchAsync(async (req: Request, res: Response) => {
 });
 
 
+const addEventsToHistoryCreatorAndUser = async () => {
+    try {
+        await UserEventServices.addEventsToHistoryCreatorAndUser();
+    } catch (error) {
+        console.error("Error in scheduled task:", error);
+    }
+};
+
+
 
 export const UserEventController = {
     createUserEvent,
     getEventsFilterByType,
     deleteUserEvent,
-    
+    addEventsToHistoryCreatorAndUser,
 };
