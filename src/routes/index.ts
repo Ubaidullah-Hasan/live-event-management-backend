@@ -11,6 +11,7 @@ import { PaymentRoutes } from '../app/modules/payment/payment.routes';
 import { TicketRoutes } from '../app/modules/ticket/tickets.routes';
 import { NotificationRoutes } from '../app/modules/notifications/notification.routes';
 import { ReportRoutes } from '../app/modules/report/report.routes';
+import { TermsAndConditionRoutes } from '../app/modules/termsAndCondition/termsAndCondition.routes';
 const router = express.Router();
 
 const apiRoutes = [
@@ -61,6 +62,10 @@ const apiRoutes = [
   {
     path: "/report-routes",
     route: ReportRoutes
+  },
+  {
+    path: "/terms-and-conditions",
+    route: TermsAndConditionRoutes
   },
 ];
 
